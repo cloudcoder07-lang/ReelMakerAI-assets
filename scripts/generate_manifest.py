@@ -6,35 +6,47 @@ GITHUB_USER = "cloudcoder07-lang"
 REPO_NAME = "ReelMakerAI-assets"
 BRANCH = "main"
 
-# Folder paths relative to this script
-LUT_FOLDER = "../assets/luts"
-MANIFEST_PATH = os.path.join(LUT_FOLDER, "manifest.json")
+# Asset folders
+ASSET_ROOT = "../assets"
+MANIFEST_PATH = os.path.join(ASSET_ROOT, "manifest.json")
 
 def get_file_size_kb(path):
     size_bytes = os.path.getsize(path)
     return f"{round(size_bytes / 1024)}KB"
 
-def build_cdn_url(filename):
-    return f"https://cdn.jsdelivr.net/gh/{GITHUB_USER}/{REPO_NAME}@{BRANCH}/assets/luts/{filename}"
+def build_cdn_url(folder, filename):
+    return f"https://cdn.jsdelivr.net/gh/{GITHUB_USER}/{REPO_NAME}@{BRANCH}/assets/{folder}/{filename}"
 
-def generate_manifest():
-    manifest = {"luts": []}
+def scan_folder(folder, extensions, mood_tag="Unknown"):
+    folder_path = os.path.join(ASSET_ROOT, folder)
+    entries = []
 
-    if not os.path.exists(LUT_FOLDER):
-        print(f"❌ LUT folder not found: {LUT_FOLDER}")
-        return
-
-    for filename in os.listdir(LUT_FOLDER):
-        if filename.endswith(".cube"):
-            file_path = os.path.join(LUT_FOLDER, filename)
+    for filename in os.listdir(folder_path):
+        if any(filename.lower().endswith(ext) for ext in extensions):
+            file_path = os.path.join(folder_path, filename)
             entry = {
                 "name": os.path.splitext(filename)[0].replace("_", " ").title(),
                 "type": "remote",
-                "url": build_cdn_url(filename),
+                "url": build_cdn_url(folder, filename),
                 "size": get_file_size_kb(file_path),
-                "mood": "Unknown"  # You can manually update this later
+                "mood": mood_tag
             }
-            manifest["luts"].append(entry)
+
+            # Add thumbnail if available
+            thumb_path = os.path.join(ASSET_ROOT, "thumbnails", f"{os.path.splitext(filename)[0]}.jpg")
+            if os.path.exists(thumb_path):
+                entry["preview"] = build_cdn_url("thumbnails", f"{os.path.splitext(filename)[0]}.jpg")
+
+            entries.append(entry)
+
+    return entries
+
+def generate_manifest():
+    manifest = {
+        "luts": scan_folder("luts", [".cube"]),
+        "fonts": scan_folder("fonts", [".ttf", ".otf"]),
+        "stickers": scan_folder("stickers", [".png", ".svg"])
+    }
 
     with open(MANIFEST_PATH, "w") as f:
         json.dump(manifest, f, indent=2)
