@@ -1,0 +1,25 @@
+{
+  "luts": [
+    {
+      "name": "Cyberpunk",
+      "type": "remote",
+      "url": "https://cdn.jsdelivr.net/gh/cloudcoder07-lang/ReelMakerAI-assets@main/assets/luts/cyberpunk.cube",
+      "size": "80KB",
+      "mood": "Futuristic"
+    },
+    {
+      "name": "Teal & Orange",
+      "type": "remote",
+      "url": "https://cdn.jsdelivr.net/gh/cloudcoder07-lang/ReelMakerAI-assets@main/assets/luts/teal_orange.cube",
+      "size": "90KB",
+      "mood": "Hollywood"
+    },
+    {
+      "name": "Noir",
+      "type": "remote",
+      "url": "https://cdn.jsdelivr.net/gh/cloudcoder07-lang/ReelMakerAI-assets@main/assets/luts/noir.cube",
+      "size": "70KB",
+      "mood": "Dramatic"
+    }
+  ]
+}
